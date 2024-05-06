@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    body{
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background-image: url('https://www.daegufc.co.kr/skin/skin22/file/wallpaper_1920x1080.jpg?v202405');
+  background-size: cover; /* 배경 이미지를 화면에 꽉 채우도록 설정 */
+    }
+    #gameContainer {
+      display: flex;
+      justify-content: center; /* 수평 가운데 정렬 */
+      align-items: center; /* 수직 가운데 정렬 */
+      height: 80vh;
+      width: 80%;
+      margin-top: 90px;
+      margin-left: 70px;
+    
+    
+  
+}
+
+    #gameCanvas {
+      border: 4px solid rgb(165, 195, 219); /* Optional: Add border to game canvas */
+      border-radius: 10px;
+      width:60%;
+      height: 60%; 
+      background-color: rgba(255, 255, 255, 0.8);
+      
+    }
+
+    #infoPanel {
+      padding: 20px;
+      border: 4px solid rgb(165, 195, 219);
+      border-radius: 10px;
+      margin-right: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+   
+      
+    }
+
+    #gameTitle {
+      position: absolute; /* Set game title to absolute positioning */
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size : 3rem;
+      font-family: "Jua", sans-serif;
+    }
+    /* Add CSS styles for game elements */
+  </style>
+</head>
+<body>
+  <div id="gameTitle">대구FC 밥 게임</div>
+  <div id="gameContainer"> 
+    <div id="infoPanel">
+        <h2>MY INFO</h2>
+        <p id="coinsInfo">Coins : 0</p>
+        <p id="levelInfo">Level : 1</p>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+  </div>
+  <img id="characterImg" src="character.png" style="display: none;"> <!-- Add this line -->
+  <script>
+    // JavaScript code for game logic
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const characterImg = document.getElementById('characterImg'); // Reference to character image
+
+    let characterX = 50;
+    let characterY = 50;
+    let coins = 0;
+    let level = 1;
+    let coinX, coinY;
+
+    function drawCharacter() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(characterImg, characterX, characterY, 50, 50); // Draw character image
+      drawCoins();
+      
+    }
+
+    function drawCoins() {
+        ctx.font = "10px Arial"; // Set font size for the emoji
+      ctx.fillStyle = "black";
+      ctx.fillText("⚽", coinX, coinY); // Draw coin emoji
+    }
+
+    function moveCharacter(direction) {
+      switch (direction) {
+        case 'up':
+          characterY -= 10;
+          break;
+        case 'down':
+          characterY += 10;
+          break;
+        case 'left':
+          characterX -= 10;
+          break;
+        case 'right':
+          characterX += 10;
+          break;
+      }
+      checkCoinCollision();
+      drawCharacter();
+    }
+
+    function updateInfoPanel() {
+      document.getElementById('coinsInfo').textContent = "Coins : " + coins + "점";
+      document.getElementById('levelInfo').textContent = "Level : " + level + "레벨";
+    }
+
+    function checkCoinCollision() {
+      if (!coinX || !coinY || Math.abs(coinX - characterX) < 10 && Math.abs(coinY - characterY) < 10) {
+        coinX = Math.random() * canvas.width;
+        coinY = Math.random() * canvas.height;
+        coins++;
+        if (coins % 5 === 0) {
+          level++;
+          alert("Level Up! You are now at Level " + level);
+        }
+      }
+    }
+
+    // Event listeners for keyboard controls
+    window.addEventListener('keydown', (event) => {
+      const key = event.key.toLowerCase();
+      if (key === 'w') moveCharacter('up');
+      else if (key === 's') moveCharacter('down');
+      else if (key === 'a') moveCharacter('left');
+      else if (key === 'd') moveCharacter('right');
+    });
+
+
+    // Initial draw
+    drawCharacter();
+    updateInfoPanel();
+  </script>
+</body>
+</html>
